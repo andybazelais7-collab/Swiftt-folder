@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWIFTT FOLDER — Rejoins le répertoire international</title>
+<meta name="description" content="SWIFTT FOLDER par ANDY SWIFTT : inscris ton numéro, rejoins un répertoire international de 10 000 contacts maximum et connecte-toi au groupe.">
+<!-- Open Graph (règle Boss : belle image de partage dès le départ) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="SWIFTT FOLDER — 10 000 contacts, un seul répertoire">
+<meta property="og:description" content="Inscris-toi avec ton pays, ton surnom et ton numéro. Ouvert à tous les pays. Par ANDY SWIFTT.">
+<meta property="og:image" content="assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="assets/og-image.jpg">
+<link rel="icon" href="assets/og-image.jpg">
+<style>
+:root{
+  --bg:#12071f; --bg2:#1d0b33; --card:#22113d; --card2:#1a0c30;
+  --violet:#b57edc; --cyan:#e0b0ff; --pink:#9b4dca;
+  --text:#faf5ff; --muted:#c4b0dd; --ok:#22e58a; --err:#ff4d6d;
+  --grad:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,Arial,sans-serif}
+body{background:radial-gradient(900px 500px at 50% -10%,#3a1a63 0%,var(--bg) 55%);color:var(--text);min-height:100vh}
+a{color:var(--cyan)}
+.wrap{max-width:760px;margin:0 auto;padding:18px 14px 90px}
+/* Header */
+.hero{text-align:center;padding:22px 10px 8px}
+.photo-ring{width:132px;height:132px;margin:0 auto 12px;border-radius:50%;padding:4px;background:var(--grad);position:relative}
+.photo-ring img,.photo-fallback{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;border:3px solid var(--bg)}
+.photo-fallback{background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;color:var(--cyan);letter-spacing:1px}
+.badge{display:inline-block;padding:5px 14px;border:1px solid var(--violet);border-radius:999px;color:#e9dcff;font-size:12px;letter-spacing:2px;text-transform:uppercase;background:rgba(181,126,220,.18)}
+h1{font-size:42px;line-height:1.05;margin:12px 0 4px;font-weight:900;letter-spacing:1px}
+h1 .swift{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{color:var(--muted);font-size:15px}
+.by{margin-top:6px;font-size:13px;color:#e9dcff}
+.by b{color:var(--cyan)}
+/* Progress */
+.progress-card{background:var(--card);border:1px solid #452a6e;border-radius:18px;padding:16px;margin:18px 0}
+.progress-top{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.progress-top b{color:var(--text);font-size:18px}
+.bar{height:12px;background:#150826;border-radius:999px;overflow:hidden;margin-top:10px;border:1px solid #452a6e}
+.bar-fill{height:100%;width:0%;background:var(--grad);border-radius:999px;transition:width .6s}
+.progress-note{font-size:12px;color:var(--muted);margin-top:8px}
+/* Nav */
+nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+nav button{background:var(--card2);color:var(--muted);border:1px solid #452a6e;padding:10px 16px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer}
+nav button.active{background:var(--grad);color:#fff;border-color:transparent}
+/* Pages & cards */
+.page{display:none}
+.page.active{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.card{background:var(--card);border:1px solid #452a6e;border-radius:20px;padding:20px;margin-bottom:16px}
+.card h2{font-size:20px;margin-bottom:6px}
+.card p.sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+label{display:block;font-size:13px;font-weight:700;letter-spacing:.4px;color:#e9dcff;margin:14px 0 7px;text-transform:uppercase}
+input,select{width:100%;background:#150826;border:1.5px solid #55337f;color:var(--text);border-radius:14px;padding:14px;font-size:16px;outline:none}
+input:focus,select:focus{border-color:var(--cyan)}
+.phone-row{display:flex;gap:8px}
+.phone-row .dial{max-width:118px;text-align:center;color:var(--cyan);font-weight:800}
+.sex-row{display:flex;gap:10px}
+.sex-row button{flex:1;background:#150826;border:1.5px solid #55337f;color:var(--text);border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer}
+.sex-row button.sel{border-color:var(--pink);background:rgba(224,176,255,.14)}
+.btn{width:100%;margin-top:20px;background:var(--grad);color:#fff;border:none;border-radius:14px;padding:16px;font-size:17px;font-weight:900;letter-spacing:.5px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;border:1.5px solid var(--violet);color:#e9dcff}
+.msg{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:700;display:none}
+.msg.err{display:block;background:rgba(255,77,109,.12);border:1px solid var(--err);color:#ffb3c0}
+.msg.ok{display:block;background:rgba(34,229,138,.12);border:1px solid var(--ok);color:#a9f5d2}
+/* Stats & list */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid #452a6e;border-radius:16px;padding:14px;text-align:center}
+.stat b{font-size:22px;display:block}
+.stat span{font-size:12px;color:var(--muted)}
+.member{display:flex;align-items:center;gap:12px;padding:12px 6px;border-bottom:1px solid #38205c}
+.member:last-child{border-bottom:none}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:#fff;flex-shrink:0}
+.member .info{flex:1;min-width:0}
+.member .name{font-weight:800}
+.member .meta{font-size:13px;color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:24px 10px;font-size:14px}
+/* Steps */
+.step{display:flex;gap:14px;margin:16px 0}
+.step .num{width:38px;height:38px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0}
+.step h3{font-size:16px;margin-bottom:3px}
+.step p{color:var(--muted);font-size:14px}
+details{background:var(--card2);border:1px solid #452a6e;border-radius:14px;padding:14px;margin:10px 0}
+summary{font-weight:800;cursor:pointer}
+details p{color:var(--muted);font-size:14px;margin-top:8px}
+/* Groupe */
+.group-card{text-align:center;padding:30px 20px}
+.group-emoji{font-size:52px}
+.group-card h2{font-size:24px;margin:10px 0 6px}
+.group-card p{color:var(--muted);font-size:15px;margin-bottom:18px}
+.group-card .btn{max-width:420px;margin:0 auto}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:22px 10px}
+footer b{color:#e9dcff}
+.small{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5}
+.locked-note{background:rgba(224,176,255,.10);border:1px solid var(--pink);color:#ffc2da;border-radius:12px;padding:12px;font-size:14px;font-weight:700}
+@media(max-width:520px){h1{font-size:34px}.stats{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== HEADER ===== -->
+  <header class="hero">
+    <div class="photo-ring">
+      <!-- FOTO BOSS : ranplase assets/boss.jpg ak foto Boss la (menm non) -->
+      <img id="bossPhoto" src="assets/boss.jpg" alt="Andy Swiftt" onerror="this.style.display='none';document.getElementById('photoFallback').style.display='flex'">
+      <div class="photo-fallback" id="photoFallback" style="display:none">AS</div>
+    </div>
+    <span class="badge">Répertoire international</span>
+    <h1><span class="swift">SWIFTT</span> FOLDER</h1>
+    <p class="tagline">Un seul dossier, des contacts du monde entier.</p>
+    <p class="by">Créé par <b>ANDY SWIFTT</b> · ANDY SWIFTT LLC</p>
+  </header>
+
+  <!-- ===== COMPTEUR 10K ===== -->
+  <div class="progress-card">
+    <div class="progress-top"><span>Inscrits</span><b><span id="countNow">0</span> / 10 000</b></div>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    <p class="progress-note" id="placesLeft">10 000 places disponibles — le dossier se ferme automatiquement à 10 000 contacts.</p>
+  </div>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav>
+    <button data-page="inscription" class="active">📝 Inscription</button>
+    <button data-page="membres">👥 Membres</button>
+    <button data-page="groupe">💬 Groupe</button>
+    <button data-page="guide">❓ Guide</button>
+    <button data-page="admin">🔐 Admin</button>
+  </nav>
+
+  <!-- ===== PAGE 1 : INSCRIPTION ===== -->
+  <section class="page active" id="page-inscription">
+    <div class="card">
+      <h2>Rejoindre SWIFTT FOLDER</h2>
+      <p class="sub">Ouvert à <b>tous les pays</b>. Choisis ton pays, l'indicatif se met automatiquement.</p>
+      <form id="joinForm" novalidate>
+        <label for="surnom">Surnom</label>
+        <input id="surnom" type="text" placeholder="✨ Entre ton surnom" maxlength="40" autocomplete="nickname">
+        <label for="pays">Pays</label>
+        <select id="pays"></select>
+        <label for="numero">Numéro de téléphone</label>
+        <div class="phone-row">
+          <input class="dial" id="dial" type="text" readonly tabindex="-1">
+          <input id="numero" type="tel" placeholder="Ex. 3497 9011" autocomplete="tel">
+        </div>
+        <label>Sexe</label>
+        <div class="sex-row">
+          <button type="button" id="sexG" class="sel">🍀 Garçon</button>
+          <button type="button" id="sexF">🌸 Fille</button>
+        </div>
+        <button class="btn" type="submit" id="submitBtn">REJOINDRE SWIFTT FOLDER →</button>
+        <div class="msg" id="formMsg"></div>
+        <p class="small">En t'inscrivant, tu acceptes que ton surnom et ton numéro apparaissent dans le répertoire SWIFTT FOLDER et dans le fichier de contacts téléchargeable par les membres. Un seul numéro = une seule inscription.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 2 : MEMBRES ===== -->
+  <section class="page" id="page-membres">
+    <div class="stats">
+      <div class="stat"><b id="statTotal">0</b><span>Membres</span></div>
+      <div class="stat"><b id="statPays">0</b><span>Pays</span></div>
+      <div class="stat"><b id="statReste">10 000</b><span>Places restantes</span></div>
+    </div>
+    <div class="card">
+      <h2>Derniers membres inscrits</h2>
+      <p class="sub">Les numéros sont partiellement masqués ici pour la vie privée. Le fichier complet est réservé au téléchargement des membres.</p>
+      <input id="search" type="text" placeholder="🔎 Rechercher un surnom ou un pays...">
+      <div id="memberList"></div>
+      <button class="btn ghost" id="dlVcf">⬇️ Télécharger tous les contacts (.vcf)</button>
+      <p class="small">Le fichier .vcf s'importe directement dans les contacts de ton téléphone (Android et iPhone).</p>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 3 : GROUPE ===== -->
+  <section class="page" id="page-groupe">
+    <div class="card group-card">
+      <div class="group-emoji">💬</div>
+      <h2>Le groupe SWIFTT FOLDER</h2>
+      <p>Après ton inscription, rejoins le groupe officiel pour rencontrer les autres membres du répertoire.</p>
+      <a class="btn" id="groupBtn" href="#" target="_blank" rel="noopener" style="display:block;text-decoration:none">REJOINDRE LE GROUPE →</a>
+      <p class="small" id="groupNote"></p>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 4 : GUIDE ===== -->
+  <section class="page" id="page-guide">
+    <div class="card">
+      <h2>Comment ça marche</h2>
+      <div class="step"><div class="num">1</div><div><h3>Inscris-toi</h3><p>Remplis le formulaire avec ton surnom, ton pays, ton numéro et ton sexe. Tous les pays sont acceptés.</p></div></div>
+      <div class="step"><div class="num">2</div><div><h3>Télécharge les contacts</h3><p>Dans la page Membres, télécharge le fichier .vcf et importe-le dans ton téléphone : tous les membres deviennent tes contacts.</p></div></div>
+      <div class="step"><div class="num">3</div><div><h3>Rejoins le groupe</h3><p>Entre dans le groupe officiel SWIFTT FOLDER pour échanger avec la communauté.</p></div></div>
+      <div class="step"><div class="num">4</div><div><h3>Respecte la limite</h3><p>Le répertoire est limité à 10 000 contacts maximum. Quand il est plein, les inscriptions se ferment automatiquement.</p></div></div>
+    </div>
+    <div class="card">
+      <h2>Questions fréquentes</h2>
+      <details><summary>Mon numéro est déjà inscrit, que faire ?</summary><p>Chaque numéro ne peut être ajouté qu'une seule fois. Si tu vois le message « Ce numéro a été déjà ajouté », c'est que ton inscription existe déjà — pas besoin de recommencer.</p></details>
+      <details><summary>Je ne suis pas en Haïti, je peux m'inscrire ?</summary><p>Oui. SWIFTT FOLDER est ouvert à tous les pays : sélectionne simplement ton pays dans la liste, l'indicatif téléphonique se remplit tout seul.</p></details>
+      <details><summary>Mes informations sont-elles en sécurité ?</summary><p>Tu partages uniquement ton surnom, ton pays, ton sexe et ton numéro — c'est le principe d'un répertoire de contacts. Ne mets jamais d'informations sensibles dans ton surnom.</p></details>
+      <details><summary>C'est gratuit ?</summary><p>Oui, l'inscription au SWIFTT FOLDER est gratuite.</p></details>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 5 : ADMIN (BOSS) ===== -->
+  <section class="page" id="page-admin">
+    <div class="card" id="adminLock">
+      <h2>Espace Admin — Boss uniquement</h2>
+      <p class="sub">Entre ton code admin pour gérer le répertoire et le lien du groupe.</p>
+      <label for="adminCode">Code admin</label>
+      <input id="adminCode" type="password" placeholder="••••••••">
+      <button class="btn" id="unlockBtn">OUVRIR L'ADMIN</button>
+      <div class="msg" id="adminMsg"></div>
+    </div>
+    <div class="card" id="adminPanel" style="display:none">
+      <h2>Gestion SWIFTT FOLDER</h2>
+      <p class="sub">Connecté en tant qu'admin.</p>
+      <label for="groupLink">Lien du groupe (WhatsApp, Telegram...)</label>
+      <input id="groupLink" type="url" placeholder="https://chat.whatsapp.com/...">
+      <button class="btn" id="saveGroup">💾 ENREGISTRER LE LIEN DU GROUPE</button>
+      <div class="msg" id="groupMsg"></div>
+      <label>Exporter le répertoire</label>
+      <button class="btn ghost" id="dlCsv">⬇️ Exporter en CSV (Excel)</button>
+      <button class="btn ghost" id="dlVcfAdmin">⬇️ Exporter en VCF (contacts téléphone)</button>
+      <p class="small">Total inscrits : <b id="adminTotal">0</b> / 10 000.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>SWIFTT FOLDER</b> — by <b>ANDY SWIFTT</b></p>
+    <p>© ANDY SWIFTT LLC · Tous droits réservés</p>
+  </footer>
+</div>
+<script>
+/* ================= CONFIG BOSS =================
+   - adminCode : change ce code avant la mise en ligne publique.
+   - groupLink : tu peux aussi coller le lien du groupe ici directement,
+     ou le saisir dans la page Admin (enregistré sur l'appareil du Boss).
+   - MAX = 10 000 contacts, comme demandé.
+   - MODE DONNÉES : par défaut "local" (démo sur l'appareil).
+     Pour un vrai répertoire central de 10 000 contacts partagé par tous
+     les visiteurs, brancher une base gratuite (Supabase) : remplir
+     SUPABASE_URL et SUPABASE_ANON_KEY, le code bascule tout seul. */
+const CONFIG = {
+  adminCode: "ANDYBAZELAIS#19",
+  groupLink: "https://chat.whatsapp.com/Kplg4i0oipZD9uKPBzytSh",
+  MAX: 10000,
+  SUPABASE_URL: "",
+  SUPABASE_ANON_KEY: ""
+};
+
+/* ===== Pays : [nom, code ISO, indicatif] — TOUS les pays ===== */
+const COUNTRIES = [
+["Haïti","HT","509"],["Afghanistan","AF","93"],["Afrique du Sud","ZA","27"],["Albanie","AL","355"],["Algérie","DZ","213"],["Allemagne","DE","49"],["Andorre","AD","376"],["Angola","AO","244"],["Anguilla","AI","1"],["Antigua-et-Barbuda","AG","1"],["Arabie saoudite","SA","966"],["Argentine","AR","54"],["Arménie","AM","374"],["Aruba","AW","297"],["Australie","AU","61"],["Autriche","AT","43"],["Azerbaïdjan","AZ","994"],
+["Bahamas","BS","1"],["Bahreïn","BH","973"],["Bangladesh","BD","880"],["Barbade","BB","1"],["Belgique","BE","32"],["Belize","BZ","501"],["Bénin","BJ","229"],["Bermudes","BM","1"],["Bhoutan","BT","975"],["Biélorussie","BY","375"],["Bolivie","BO","591"],["Bonaire","BQ","599"],["Bosnie-Herzégovine","BA","387"],["Botswana","BW","267"],["Brésil","BR","55"],["Brunei","BN","673"],["Bulgarie","BG","359"],["Burkina Faso","BF","226"],["Burundi","BI","257"],
+["Cambodge","KH","855"],["Cameroun","CM","237"],["Canada","CA","1"],["Cap-Vert","CV","238"],["Chili","CL","56"],["Chine","CN","86"],["Chypre","CY","357"],["Colombie","CO","57"],["Comores","KM","269"],["Congo","CG","242"],["Congo (RDC)","CD","243"],["Corée du Nord","KP","850"],["Corée du Sud","KR","82"],["Costa Rica","CR","506"],["Côte d'Ivoire","CI","225"],["Croatie","HR","385"],["Cuba","CU","53"],["Curaçao","CW","599"],
+["Danemark","DK","45"],["Djibouti","DJ","253"],["Dominique","DM","1"],["Égypte","EG","20"],["Émirats arabes unis","AE","971"],["Équateur","EC","593"],["Érythrée","ER","291"],["Espagne","ES","34"],["Estonie","EE","372"],["Eswatini","SZ","268"],["États-Unis","US","1"],["Éthiopie","ET","251"],
+["Fidji","FJ","679"],["Finlande","FI","358"],["France","FR","33"],
+["Gabon","GA","241"],["Gambie","GM","220"],["Géorgie","GE","995"],["Ghana","GH","233"],["Gibraltar","GI","350"],["Grèce","GR","30"],["Grenade","GD","1"],["Groenland","GL","299"],["Guadeloupe","GP","590"],["Guam","GU","1"],["Guatemala","GT","502"],["Guinée","GN","224"],["Guinée équatoriale","GQ","240"],["Guinée-Bissau","GW","245"],["Guyana","GY","592"],["Guyane française","GF","594"],
+["Honduras","HN","504"],["Hong Kong","HK","852"],["Hongrie","HU","36"],
+["Îles Caïmans","KY","1"],["Îles Cook","CK","682"],["Îles Féroé","FO","298"],["Îles Marshall","MH","692"],["Îles Salomon","SB","677"],["Îles Turques-et-Caïques","TC","1"],["Îles Vierges américaines","VI","1"],["Îles Vierges britanniques","VG","1"],["Inde","IN","91"],["Indonésie","ID","62"],["Irak","IQ","964"],["Iran","IR","98"],["Irlande","IE","353"],["Islande","IS","354"],["Israël","IL","972"],["Italie","IT","39"],
+["Jamaïque","JM","1"],["Japon","JP","81"],["Jersey","JE","44"],["Jordanie","JO","962"],
+["Kazakhstan","KZ","7"],["Kenya","KE","254"],["Kirghizistan","KG","996"],["Kiribati","KI","686"],["Koweït","KW","965"],
+["Laos","LA","856"],["Lesotho","LS","266"],["Lettonie","LV","371"],["Liban","LB","961"],["Liberia","LR","231"],["Libye","LY","218"],["Liechtenstein","LI","423"],["Lituanie","LT","370"],["Luxembourg","LU","352"],
+["Macao","MO","853"],["Macédoine du Nord","MK","389"],["Madagascar","MG","261"],["Malaisie","MY","60"],["Malawi","MW","265"],["Maldives","MV","960"],["Mali","ML","223"],["Malte","MT","356"],["Maroc","MA","212"],["Martinique","MQ","596"],["Maurice","MU","230"],["Mauritanie","MR","222"],["Mayotte","YT","262"],["Mexique","MX","52"],["Micronésie","FM","691"],["Moldavie","MD","373"],["Monaco","MC","377"],["Mongolie","MN","976"],["Monténégro","ME","382"],["Montserrat","MS","1"],["Mozambique","MZ","258"],["Myanmar","MM","95"],
+["Namibie","NA","264"],["Nauru","NR","674"],["Népal","NP","977"],["Nicaragua","NI","505"],["Niger","NE","227"],["Nigeria","NG","234"],["Norvège","NO","47"],["Nouvelle-Calédonie","NC","687"],["Nouvelle-Zélande","NZ","64"],
+["Oman","OM","968"],["Ouganda","UG","256"],["Ouzbékistan","UZ","998"],
+["Pakistan","PK","92"],["Palestine","PS","970"],["Panama","PA","507"],["Papouasie-Nouvelle-Guinée","PG","675"],["Paraguay","PY","595"],["Pays-Bas","NL","31"],["Pérou","PE","51"],["Philippines","PH","63"],["Pologne","PL","48"],["Polynésie française","PF","689"],["Porto Rico","PR","1"],["Portugal","PT","351"],
+["Qatar","QA","974"],
+["République centrafricaine","CF","236"],["République dominicaine","DO","1"],["République tchèque","CZ","420"],["Réunion","RE","262"],["Roumanie","RO","40"],["Royaume-Uni","GB","44"],["Russie","RU","7"],["Rwanda","RW","250"],
+["Saint-Barthélemy","BL","590"],["Saint-Christophe-et-Niévès","KN","1"],["Saint-Marin","SM","378"],["Saint-Martin","MF","590"],["Saint-Pierre-et-Miquelon","PM","508"],["Saint-Vincent-et-les-Grenadines","VC","1"],["Sainte-Lucie","LC","1"],["Salvador","SV","503"],["Samoa","WS","685"],["São Tomé-et-Príncipe","ST","239"],["Sénégal","SN","221"],["Serbie","RS","381"],["Seychelles","SC","248"],["Sierra Leone","SL","232"],["Singapour","SG","65"],["Slovaquie","SK","421"],["Slovénie","SI","386"],["Somalie","SO","252"],["Soudan","SD","249"],["Soudan du Sud","SS","211"],["Sri Lanka","LK","94"],["Suède","SE","46"],["Suisse","CH","41"],["Suriname","SR","597"],["Syrie","SY","963"],
+["Taïwan","TW","886"],["Tadjikistan","TJ","992"],["Tanzanie","TZ","255"],["Tchad","TD","235"],["Thaïlande","TH","66"],["Timor oriental","TL","670"],["Togo","TG","228"],["Tonga","TO","676"],["Trinité-et-Tobago","TT","1"],["Tunisie","TN","216"],["Turkménistan","TM","993"],["Turquie","TR","90"],["Tuvalu","TV","688"],
+["Ukraine","UA","380"],["Uruguay","UY","598"],
+["Vanuatu","VU","678"],["Vatican","VA","39"],["Venezuela","VE","58"],["Vietnam","VN","84"],
+["Yémen","YE","967"],["Zambie","ZM","260"],["Zimbabwe","ZW","263"]
+];
+function flag(iso){return iso.toUpperCase().replace(/./g,c=>String.fromCodePoint(127397+c.charCodeAt(0)));}
+
+/* ===== Stockage ===== */
+const KEY="swiftt_folder_contacts_v1", GKEY="swiftt_folder_group_link";
+let contacts=[];
+try{contacts=JSON.parse(localStorage.getItem(KEY)||"[]");}catch(e){contacts=[];}
+let sexe="Garçon";
+
+const $=id=>document.getElementById(id);
+const paysSel=$("pays");
+COUNTRIES.forEach(([nom,iso,dial],i)=>{
+  const o=document.createElement("option");
+  o.value=i; o.textContent=flag(iso)+" "+nom+" (+"+dial+")";
+  paysSel.appendChild(o);
+});
+paysSel.value=COUNTRIES.findIndex(c=>c[1]==="HT");
+function syncDial(){$("dial").value="+"+COUNTRIES[+paysSel.value][2];}
+paysSel.addEventListener("change",syncDial); syncDial();
+
+/* Navigation pages */
+document.querySelectorAll("nav button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    $("page-"+b.dataset.page).classList.add("active");
+    render();
+  });
+});
+
+/* Sexe */
+$("sexG").addEventListener("click",()=>{sexe="Garçon";$("sexG").classList.add("sel");$("sexF").classList.remove("sel");});
+$("sexF").addEventListener("click",()=>{sexe="Fille";$("sexF").classList.add("sel");$("sexG").classList.remove("sel");});
+
+/* Rendu compteur + membres */
+function mask(num){if(num.length<=4)return num;return num.slice(0,3)+" •• •• "+num.slice(-2);}
+function render(){
+  const n=contacts.length;
+  $("countNow").textContent=n.toLocaleString("fr-FR");
+  $("barFill").style.width=Math.min(100,(n/CONFIG.MAX)*100)+"%";
+  $("placesLeft").textContent = n>=CONFIG.MAX
+    ? "🔒 Le dossier est COMPLET : 10 000 contacts atteints, inscriptions fermées."
+    : (CONFIG.MAX-n).toLocaleString("fr-FR")+" places restantes — le dossier se ferme automatiquement à 10 000 contacts.";
+  $("statTotal").textContent=n.toLocaleString("fr-FR");
+  $("statPays").textContent=new Set(contacts.map(c=>c.iso)).size;
+  $("statReste").textContent=(CONFIG.MAX-n).toLocaleString("fr-FR");
+  $("adminTotal").textContent=n.toLocaleString("fr-FR");
+  $("submitBtn").disabled = n>=CONFIG.MAX;
+  if(n>=CONFIG.MAX)$("submitBtn").textContent="🔒 DOSSIER COMPLET — 10 000 CONTACTS";
+  const q=($("search").value||"").toLowerCase();
+  const list=[...contacts].reverse().filter(c=>!q||c.surnom.toLowerCase().includes(q)||c.pays.toLowerCase().includes(q));
+  $("memberList").innerHTML = list.length===0
+    ? '<div class="empty">Aucun membre pour le moment. Sois le premier à t\'inscrire ! 🚀</div>'
+    : list.slice(0,200).map(c=>'<div class="member"><div class="avatar">'+(c.surnom[0]||"?").toUpperCase()+'</div><div class="info"><div class="name">'+escapeHtml(c.surnom)+' '+(c.sexe==="Fille"?"🌸":"🍀")+'</div><div class="meta">'+flag(c.iso)+' '+escapeHtml(c.pays)+' · +'+c.dial+' '+mask(c.numero)+'</div></div></div>').join("");
+  /* Groupe */
+  const link=(localStorage.getItem(GKEY)||CONFIG.groupLink||"").trim();
+  const btn=$("groupBtn");
+  if(link){btn.href=link;btn.style.opacity="1";btn.textContent="REJOINDRE LE GROUPE →";$("groupNote").textContent="";}
+  else{btn.href="#";btn.style.opacity=".55";btn.textContent="🔒 LIEN DU GROUPE BIENTÔT DISPONIBLE";$("groupNote").textContent="Boss n'a pas encore mis le lien du groupe. Il le colle dans la page Admin ou dans le fichier du site.";btn.onclick=e=>e.preventDefault();}
+  if(link)btn.onclick=null;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+$("search").addEventListener("input",render);
+
+/* Inscription */
+$("joinForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const msg=$("formMsg"); msg.className="msg";
+  const surnom=$("surnom").value.trim();
+  const [paysNom,iso,dial]=COUNTRIES[+paysSel.value];
+  let numero=$("numero").value.replace(/[^\d]/g,"");
+  if(numero.startsWith(dial) && numero.length>dial.length+6) numero=numero.slice(dial.length);
+  numero=numero.replace(/^0+/,"");
+  if(surnom.length<2){msg.classList.add("err");msg.textContent="⚠️ Entre un surnom d'au moins 2 caractères.";return;}
+  if(numero.length<4||numero.length>15){msg.classList.add("err");msg.textContent="⚠️ Numéro invalide. Vérifie ton numéro de téléphone.";return;}
+  if(contacts.length>=CONFIG.MAX){msg.classList.add("err");msg.textContent="🔒 Le dossier est complet : 10 000 contacts maximum atteints.";return;}
+  const complet=dial+numero;
+  if(contacts.some(c=>c.complet===complet)){msg.classList.add("err");msg.textContent="❌ Ce numéro a été déjà ajouté.";return;}
+  contacts.push({surnom,pays:paysNom,iso,dial,numero,complet,sexe,date:new Date().toISOString()});
+  localStorage.setItem(KEY,JSON.stringify(contacts));
+  msg.classList.add("ok");msg.textContent="✅ Bienvenue dans SWIFTT FOLDER, "+surnom+" ! Tu es le membre n° "+contacts.length+". Va dans Membres pour télécharger les contacts, puis rejoins le Groupe.";
+  $("surnom").value="";$("numero").value="";
+  render();
+});
+
+/* Exports */
+function buildVcf(){
+  return contacts.map(c=>"BEGIN:VCARD\r\nVERSION:3.0\r\nFN:SF "+c.surnom.replace(/\s+/g," ")+"\r\nTEL;TYPE=CELL:+"+c.complet+"\r\nEND:VCARD").join("\r\n");
+}
+function download(name,content,type){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+$("dlVcf").addEventListener("click",()=>{
+  if(!contacts.length){alert("Aucun contact à exporter pour le moment.");return;}
+  download("swiftt-folder-contacts.vcf",buildVcf(),"text/vcard");
+});
+$("dlVcfAdmin").addEventListener("click",()=>{
+  if(!contacts.length){alert("Aucun contact à exporter.");return;}
+  download("swiftt-folder-contacts.vcf",buildVcf(),"text/vcard");
+});
+$("dlCsv").addEventListener("click",()=>{
+  if(!contacts.length){alert("Aucun contact à exporter.");return;}
+  const csv="Surnom;Pays;Indicatif;Numero;Complet;Sexe;Date\r\n"+contacts.map(c=>[c.surnom,c.pays,c.dial,c.numero,"+"+c.complet,c.sexe,c.date].join(";")).join("\r\n");
+  download("swiftt-folder-contacts.csv",csv,"text/csv");
+});
+
+/* Admin */
+$("unlockBtn").addEventListener("click",()=>{
+  const m=$("adminMsg"); m.className="msg";
+  if($("adminCode").value===CONFIG.adminCode){
+    $("adminLock").style.display="none"; $("adminPanel").style.display="block";
+    $("groupLink").value=(localStorage.getItem(GKEY)||CONFIG.groupLink||"");
+    render();
+  }else{m.classList.add("err");m.textContent="❌ Code admin incorrect.";}
+});
+$("saveGroup").addEventListener("click",()=>{
+  const m=$("groupMsg"); m.className="msg";
+  const v=$("groupLink").value.trim();
+  if(v && !/^https?:\/\//i.test(v)){m.classList.add("err");m.textContent="⚠️ Le lien doit commencer par https://";return;}
+  localStorage.setItem(GKEY,v);
+  m.classList.add("ok");m.textContent="✅ Lien du groupe enregistré. Il apparaît maintenant dans la page Groupe.";
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
